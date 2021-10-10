@@ -3,6 +3,7 @@ package entities.manager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +89,15 @@ class ContactManagerTest {
 						&& contact.getPhone().equals("0990262852"))
 				.findAny()
 				.isPresent());
-		
+	}
+	
+	@Test
+	@DisplayName("test with its on develepor machine")
+	public void dev() { 
+		Assumptions.assumeTrue("DEV".equals(System.getProperty("ENV")));
+		cm.addContact("Vini", "Yone", "0990262852");
+		Assertions.assertFalse(cm.getAllContacts().isEmpty());
+		Assertions.assertEquals(1, cm.getAllContacts().size());
 	}
 	
 }
