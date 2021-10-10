@@ -9,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 
 
 @TestInstance(Lifecycle.PER_CLASS) // connections, large files
@@ -33,7 +35,8 @@ class ContactManagerTest {
 		Assertions.assertTrue(cm
 				.getAllContacts().stream().filter(contact -> contact.getFirstName().equals("Vini")
 						&& contact.getLastName().equals("Yone") && contact.getPhone().equals("0990262852"))
-				.findAny().isPresent());
+				.findAny()
+				.isPresent());
 
 	}
 
@@ -69,6 +72,23 @@ class ContactManagerTest {
 	@AfterAll
 	public void afterAll() { 
 		System.out.println("exec after all tests");
+	}
+	
+	@Test
+	@DisplayName("should only create on macos")
+	@EnabledOnOs(value = OS.MAC, disabledReason = "Only on mac OS")
+	public void createOnlyOnMac() { 
+		cm.addContact("vini", "yone", "0990262852");
+		Assertions.assertFalse(cm.getAllContacts().isEmpty());
+		Assertions.assertEquals(1, cm.getAllContacts().size());
+		Assertions.assertTrue(cm
+				.getAllContacts().stream()
+				.filter(contact -> contact.getFirstName().equals("Vini")
+						&& contact.getLastName().equals("Yone") 
+						&& contact.getPhone().equals("0990262852"))
+				.findAny()
+				.isPresent());
+		
 	}
 	
 }
