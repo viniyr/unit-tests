@@ -1,5 +1,8 @@
 package entities.manager;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +16,11 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 
 @TestInstance(Lifecycle.PER_CLASS) // connections, large files
@@ -59,7 +67,7 @@ class ContactManagerTest {
 	}
 	
 	@Test
-	@DisplayName("null phone number")
+	@DisplayName("null phone number error")
 	public void errorIfPhoneIsNull() {
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			cm.addContact("vini", "yone", null);
@@ -109,5 +117,36 @@ class ContactManagerTest {
 		Assertions.assertFalse(cm.getAllContacts().isEmpty());
 		Assertions.assertEquals(1, cm.getAllContacts().size());
 	}
+	
+	@DisplayName("valuesource parameterized")
+	@ParameterizedTest
+	@ValueSource(strings = {"0990262852", "0990262852", "0990262852"})
+	public void valueSourceTest(String phone) { 
+		cm.addContact("Vini", "Yone", phone);
+		Assertions.assertFalse(cm.getAllContacts().isEmpty());
+		Assertions.assertEquals(1, cm.getAllContacts().size());
+	}
+	
+	@DisplayName("methodsource parameterized")
+	@ParameterizedTest
+	@MethodSource("phoneList")
+	public void methodSourceTest(String phone) { 
+		cm.addContact("Vini", "Yone", phone);
+		Assertions.assertFalse(cm.getAllContacts().isEmpty());
+		Assertions.assertEquals(1, cm.getAllContacts().size());
+	}
+	
+	private static List<String> phoneList() { 
+		return Arrays.asList("0990262852","0990262852","0990262852");
+	}
+	
+	@DisplayName("csv file source - phone required format")
+	@ParameterizedTest
+	@CsvFileSource(resources = "/data.csv")
+	public void csvSourceTest(String phone) { 
+		cm.addContact("Vini", "Yone", phone);
+		Assertions.assertFalse(cm.getAllContacts().isEmpty());
+		Assertions.assertEquals(1, cm.getAllContacts().size());
+	} 
 	
 }
