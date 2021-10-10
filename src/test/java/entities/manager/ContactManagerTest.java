@@ -1,14 +1,32 @@
 package entities.manager;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 
+
+@TestInstance(Lifecycle.PER_CLASS) // connections, large files
 class ContactManagerTest {
 
+	ContactManager cm;
+	@BeforeAll
+	public void testBf() { 
+		System.out.println("b4 all tests");
+	}
+	
+	@BeforeEach
+	public void setup() { 
+		cm = new ContactManager();
+	}
+	
 	@Test
 	public void creationTest() {
-		ContactManager cm = new ContactManager();
 		cm.addContact("Vini", "Yone", "0990262852");
 		Assertions.assertFalse(cm.getAllContacts().isEmpty());
 		Assertions.assertEquals(1, cm.getAllContacts().size());
@@ -22,7 +40,6 @@ class ContactManagerTest {
 	@Test
 	@DisplayName("null first name error")
 	public void errorIfFirstNameIsNull() { 
-		ContactManager cm = new ContactManager();
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			cm.addContact(null, "yone", "0990262852");
 		});
@@ -31,7 +48,6 @@ class ContactManagerTest {
 	@Test
 	@DisplayName("null last name error")
 	public void errorIfLastNameIsNull() { 
-		ContactManager cm = new ContactManager();
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			cm.addContact("vini", null, "0990262852");
 		});
@@ -40,10 +56,19 @@ class ContactManagerTest {
 	@Test
 	@DisplayName("null phone number")
 	public void errorIfPhoneIsNull() {
-		ContactManager cm = new ContactManager();
 		Assertions.assertThrows(RuntimeException.class, () -> {
 			cm.addContact("vini", "yone", null);
 		});
-
 	}
+	
+	@AfterEach
+	public void afterEach() { 
+		System.out.println("after each test");
+	}
+	
+	@AfterAll
+	public void afterAll() { 
+		System.out.println("exec after all tests");
+	}
+	
 }
