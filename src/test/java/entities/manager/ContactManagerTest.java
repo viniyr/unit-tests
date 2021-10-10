@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -95,6 +96,15 @@ class ContactManagerTest {
 	@DisplayName("test with its on develepor machine")
 	public void dev() { 
 		Assumptions.assumeTrue("DEV".equals(System.getProperty("ENV")));
+		cm.addContact("Vini", "Yone", "0990262852");
+		Assertions.assertFalse(cm.getAllContacts().isEmpty());
+		Assertions.assertEquals(1, cm.getAllContacts().size());
+	}
+	
+	@DisplayName("repeated test")
+	@RepeatedTest(value = 4,
+			name= "r: {currentRepetition} of {totalRepetitions}")
+	public void repeated() { 
 		cm.addContact("Vini", "Yone", "0990262852");
 		Assertions.assertFalse(cm.getAllContacts().isEmpty());
 		Assertions.assertEquals(1, cm.getAllContacts().size());
